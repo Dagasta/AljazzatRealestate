@@ -1,54 +1,56 @@
+"use client";
+
+import { motion } from "framer-motion";
 import PropertyCard from "./PropertyCard";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { useProperties } from "@/context/PropertyContext";
 
 export default function FeaturedProperties() {
-    const properties = [
-        {
-            id: "AZ001",
-            title: "Modern 2BHK Apartment",
-            price: "45,000 AED/year",
-            location: "Al Nahda, Sharjah",
-            type: "For Rent" as const,
-            image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800&auto=format&fit=crop"
-        },
-        {
-            id: "AZ002",
-            title: "Luxury Villa with Pool",
-            price: "3,200,000 AED",
-            location: "Muwaileh, Sharjah",
-            type: "For Sale" as const,
-            image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=800&auto=format&fit=crop"
-        },
-        {
-            id: "AZ003",
-            title: "Commercial Office Space",
-            price: "120,000 AED/year",
-            location: "Al Majaz, Sharjah",
-            type: "For Rent" as const,
-            image: "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=800&auto=format&fit=crop"
-        },
-    ];
+    const { properties, isLoading } = useProperties();
+    const featuredProperties = properties.slice(0, 3);
 
+    if (isLoading) return null; // Or show skeleton
     return (
-        <section className="section-padding bg-white">
-            <div className="container mx-auto px-4 md:px-6">
-                <div className="flex flex-col md:flex-row justify-between items-end mb-12">
+        <section className="py-32 bg-accent">
+            <div className="container mx-auto px-4 md:px-8">
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
                     <div>
-                        <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4 italic">Featured Properties</h2>
-                        <p className="text-gray-500 max-w-xl">
-                            Explore our handpicked selection of premium properties in the most sought-after locations in Sharjah.
+                        <motion.h2
+                            initial={{ opacity: 0, x: -30 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            className="text-4xl md:text-6xl font-black text-primary mb-6"
+                        >
+                            Featured <span className="text-secondary italic">Properties</span>
+                        </motion.h2>
+                        <p className="text-slate-500 max-w-xl text-lg">
+                            Handpicked listings that offer the perfect blend of luxury, comfort, and investment potential in Sharjah.
                         </p>
                     </div>
-                    <button className="mt-8 md:mt-0 text-secondary font-bold hover:underline">
-                        View All Properties &rarr;
-                    </button>
+                    <Link href="/properties" className="group flex items-center space-x-3 text-primary font-black uppercase tracking-widest text-sm hover:text-secondary transition-colors">
+                        <span>All Properties</span>
+                        <div className="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-secondary transition-colors">
+                            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                        </div>
+                    </Link>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {properties.map((property) => (
-                        <PropertyCard key={property.id} {...property} />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    {featuredProperties.map((property, index) => (
+                        <motion.div
+                            key={property.id}
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6, delay: index * 0.1 }}
+                            viewport={{ once: true }}
+                        >
+                            <PropertyCard key={property.id} {...property} />
+                        </motion.div>
                     ))}
                 </div>
             </div>
         </section>
     );
 }
+
